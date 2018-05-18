@@ -5,7 +5,6 @@ import plotly.graph_objs as go
 import numpy as np
 import argparse
 
-LOG_FILENAME = 'Insert.log'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-mi', type=int, dest='minInterval', default=1)
