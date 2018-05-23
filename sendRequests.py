@@ -2,17 +2,15 @@ import random
 import time
 import logging
 import datetime
-import plotly.plotly as ply
-import plotly.graph_objs as go
 import numpy as np
 import requests
 import threading
 import argparse
-
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-nw', type= int, dest='workers', default=1)
-parser.add_argument('-rpw', type=int, dest='queries',default=10000000)
+parser.add_argument('-rpw', type=int, dest='queries',default=sys.maxint)
 parser.add_argument('-b', type=str, dest='bucket',default="beer-sample")
 parser.add_argument('-vn', type=str , dest='viewName',default="view1")
 parser.add_argument('-ddoc', type=str, dest='DDoc',default="DDoc1")
@@ -65,8 +63,8 @@ class qWorker(threading.Thread):
         for i in xrange(self.queries):
             start=time.time()
             r = requests.get(self.URL+stale[i%3], auth=self.auth)
-            if not checkEquals(expected[i%3],r.json()):
-                logging.error("Different Return type %s %s",expected[i%3], r.json())
+            if r.status_code != 200 or not checkEquals(expected[i%3],r.json()):
+                logging.error("Error status Code %d ", r.status_code)
                 break
             logging.info(time.time()-start)
 
